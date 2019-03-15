@@ -68,6 +68,7 @@ public class UserController {
     public ResponseData insertUser(@ApiParam(value = "username", required = true) @RequestParam("username") String username,
                                    @ApiParam(value = "password", required = true) @RequestParam("password") String password) {
         ResponseData responseData;
+        //判断用户名是否重复
         int sameUsername = userService.sameUsername(username);
 
         if (sameUsername > 0) {
@@ -90,10 +91,12 @@ public class UserController {
         String oldPassword = user.getPassword();
         String MD5newPassword = MD5.MD5Encode(newPassword, "utf8", false);
 
+        //判断新旧密码是否重复
         if (oldPassword.equals(MD5newPassword)) {
             responseData = new ResponseData("新旧密码重复", "301");
             return responseData;
         }
+        //修改成功
         userService.updateUserById(id, MD5newPassword);
         responseData = new ResponseData("Success", "200");
         return responseData;
